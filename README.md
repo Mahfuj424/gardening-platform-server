@@ -1,1 +1,1 @@
-# mechanical-keyboard-server
+# gardening-platform-server
