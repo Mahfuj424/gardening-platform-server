@@ -3,6 +3,8 @@ import { paymentRoutes } from "../modules/payment/payment.route";
 import { UserRoutes } from "../modules/user/user.route";
 import { AuthRotues } from "../modules/auth/auth-route";
 import { PostRoutes } from "../modules/post/post.route";
+import { FavoriteRoutes } from "../modules/favorite/favorite.route";
+import { NotificationRoutes } from "../modules/notification/notification.route";
 
 const router = Router();
 
@@ -18,6 +20,14 @@ const moduleRoutes = [
   {
     path: "/post",
     route: PostRoutes,
+  },
+  {
+    path: "/favorite",
+    route: FavoriteRoutes,
+  },
+  {
+    path: "/notification",
+    route: NotificationRoutes,
   },
   {
     path: "/create-checkout-session",

@@ -10,3 +10,8 @@ export const updateNotificationSchema = z.object({
   message: z.string().optional(),
   isRead: z.boolean().optional(),
 });
+
+export const NotificationValidation = {
+    createNotificationSchema,
+    updateNotificationSchema,
+}
