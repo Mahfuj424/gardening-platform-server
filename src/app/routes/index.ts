@@ -5,6 +5,7 @@ import { AuthRotues } from "../modules/auth/auth-route";
 import { PostRoutes } from "../modules/post/post.route";
 import { FavoriteRoutes } from "../modules/favorite/favorite.route";
 import { NotificationRoutes } from "../modules/notification/notification.route";
+import { CommentRoutes } from "../modules/comment/comment.route";
 
 const router = Router();
 
@@ -28,6 +29,10 @@ const moduleRoutes = [
   {
     path: "/notification",
     route: NotificationRoutes,
+  },
+  {
+    path: "/comments",
+    route: CommentRoutes,
   },
   {
     path: "/create-checkout-session",
