@@ -12,7 +12,7 @@ const userSchema = new Schema<IUser>(
     isVerified: { type: Boolean, default: false },
     premiumAccess: { type: Boolean, default: false },
     posts: [{ type: Schema.Types.ObjectId, ref: "Post" }],
-    role: { type: String },
+    role: { type: String, default:'user' },
   },
   { timestamps: true }
 );

@@ -1,27 +1,16 @@
-import { Router } from "express";
+import express from "express";
 import { CommentControllers } from "./comment.controller";
-import validateRequest from "../../middleware/validateRequest";
-import { CommentValidation } from "./comment.validation";
 
-const router = Router();
+const router = express.Router();
 
-// Route to create a new comment on a post
-router.post(
-  "/",
-  validateRequest(CommentValidation.createCommentSchema),
-  CommentControllers.createComment
-);
+// Create a new comment for a post
+router.post("/:postId", CommentControllers.createComment);
 
-// Route to reply to a comment
-router.post("/:parentCommentId/reply", CommentControllers.replyToComment);
+// Update a specific comment
+router.patch("/:id", CommentControllers.updateComment);
 
-router.get("/:postId", CommentControllers.getAllComments);
+// delete comment
+router.delete("/:id/delete", CommentControllers.deleteComment);
 
-// Route to update a comment
-router.patch(
-  "/:commentId",
-  validateRequest(CommentValidation.updateCommentSchema),
-  CommentControllers.updateComment
-);
 
 export const CommentRoutes = router;

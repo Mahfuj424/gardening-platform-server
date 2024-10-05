@@ -1,12 +1,14 @@
-import { Schema, model } from 'mongoose';
-import { IComment } from './comment.interface';
+import { Schema, model } from "mongoose";
+import { IComment } from "./comment.interface";
 
-const commentSchema = new Schema<IComment>({
-  content: { type: String, required: true },
-  post: { type: Schema.Types.ObjectId, ref: 'Post', required: true },
-  author: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-  replies: [{ type: Schema.Types.ObjectId, ref: 'Comment' }],
-}, { timestamps: true });
+const commentSchema = new Schema<IComment>(
+  {
+    author: { type: Schema.Types.ObjectId, ref: "User", required: true }, // User reference
+    commentText: { type: String, required: true }, // Comment content
+    commentImage: { type: String, required: true },
+    // replies: [{ type: Schema.Types.ObjectId, ref: "Comment" }],  // Nested replies
+  },
+  { timestamps: true } // Automatically adds createdAt and updatedAt
+);
 
-const Comment = model<IComment>('Comment', commentSchema);
-export default Comment;
+export const Comment = model<IComment>("Comment", commentSchema);

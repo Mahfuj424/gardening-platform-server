@@ -14,7 +14,14 @@ const updateUserInfo = async (userId: string, updateData: Partial<IUser>) => {
   return result;
 };
 
+
+const getAllUsersFromDB = async()=>{
+  const result = await User.find()
+  return result;
+}
+
 export const UserServices = {
   createUserIntoDB,
   updateUserInfo,
+  getAllUsersFromDB
 };

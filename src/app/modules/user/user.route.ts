@@ -17,4 +17,6 @@ router.patch(
   UserControllers.updateUser
 );
 
+router.get('/all-users', UserControllers.getAllUsers)
+
 export const UserRoutes = router;

@@ -1,68 +1,98 @@
-import Comment from "./comment.model";
+import Post from "../post/post.model";
+import { IComment } from "./comment.interface";
+import { Comment } from "./comment.model";
 
+// Create comment in the DB and associate it with a post
 const createCommentIntoDB = async (
-  content: string,
   postId: string,
-  authorId: string
+  author: string,
+  commentText: string,
+  commentImage: string
 ) => {
   const comment = await Comment.create({
-    content,
-    post: postId,
-    author: authorId,
+    author,
+    commentText,
+    commentImage,
   });
+
+  // Push the comment to the relevant post's comments array
+  await Post.findByIdAndUpdate(
+    postId,
+    { $push: { comments: comment?._id } },
+    { new: true, runValidators: true }
+  );
+
   return comment;
 };
 
-const replyToCommentInDB = async (
-  parentCommentId: string,
-  content: string,
-  authorId: string
+// Update comment only if the author matches the requester
+const updateCommentInDB = async (
+  commentId: string,
+  authorId: string,
+  payload: Partial<IComment>
 ) => {
-  const parentComment = await Comment.findById(parentCommentId).populate(
-    "author",
-    "name"
-  );
+  // Find the comment by ID
+  const existingComment = await Comment.findById(commentId);
 
-  if (!parentComment) {
-    throw new Error("Parent comment not found");
+  // Check if the comment exists
+  if (!existingComment) {
+    throw new Error("Comment not found.");
   }
 
-  const authorName = parentComment.author?.name
-    ? `@${parentComment.author.name}`
-    : "";
-  const replyContent = `${authorName} ${content}`;
+  // Check if the author of the comment matches the user requesting the update
+  if (existingComment.author.toString() !== authorId) {
+    throw new Error("You are not authorized to update this comment.");
+  }
 
-  const replyComment = await Comment.create({
-    content: replyContent,
-    post: parentComment.post,
-    author: authorId,
+  // Proceed with updating the comment
+  const updatedComment = await Comment.findByIdAndUpdate(commentId, payload, {
+    new: true,
+    runValidators: true,
   });
 
-  parentComment.replies.push(replyComment._id);
-  await parentComment.save();
-
-  return replyComment;
+  return updatedComment;
 };
 
-const getAllCommentsFromDB = async (postId: string) => {
-    const result = await Comment.find({ post: postId })
-      .populate("author", "name") // Populates author details like the name
-      .populate("replies"); // Populates any replies to the comment
-    return result;
-  };
 
-const updateCommentInDB = async (commentId: string, content: string) => {
-  const updatedComment = await Comment.findByIdAndUpdate(
+const deleteCommentInDB = async (commentId: string, authorId: string) => {
+  // Find the comment by ID
+  const existingComment = await Comment.findById(commentId);
+
+  // Check if the comment exists
+  if (!existingComment) {
+    throw new Error("Comment not found.");
+  }
+
+  // Check if the author of the comment matches the user requesting the deletion
+  if (existingComment.author.toString() !== authorId) {
+    throw new Error("You are not authorized to delete this comment.");
+  }
+
+  // Proceed with deleting the comment
+  await Comment.findByIdAndDelete(commentId);
+
+  return { message: "Comment successfully deleted." };
+};
+
+
+const addReplyToComment = async (commentId: string, replyId: string) => {
+  const comment = await Comment.findByIdAndUpdate(
     commentId,
-    { content },
+    { $push: { replies: replyId } },
     { new: true }
   );
-  return updatedComment;
+  return comment;
+};
+
+const getCommentsByPostId = async (postId: string) => {
+  const comments = await Comment.find({ postId }).populate("replies");
+  return comments;
 };
 
 export const CommentServices = {
   createCommentIntoDB,
-  replyToCommentInDB,
   updateCommentInDB,
-  getAllCommentsFromDB,
+  addReplyToComment,
+  getCommentsByPostId,
+  deleteCommentInDB
 };

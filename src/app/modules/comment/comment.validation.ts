@@ -3,8 +3,9 @@ import { z } from "zod";
 export const createCommentSchema = z.object({
   body: z.object({
     content: z.string().min(3, "Comment must be at least 3 characters long"),
-    post: z.string(),
+    postId: z.string(),
     author: z.string(),
+    commentImage:z.string(),
   }),
 });
 

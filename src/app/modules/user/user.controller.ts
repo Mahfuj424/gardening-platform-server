@@ -49,7 +49,29 @@ const updateUser = catchAsync(async (req, res, next) => {
   });
 });
 
+const getAllUsers = catchAsync(async (req, res, next) => {
+
+  const result = await UserServices.getAllUsersFromDB();
+
+  if (!result) {
+    return sendResponse(res, {
+      statusCode: httpStatus.NOT_FOUND,
+      success: false,
+      message: "Users not found",
+      data: [],
+    });
+  }
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Successfully Retrieved users",
+    data: result,
+  });
+});
+
 export const UserControllers = {
   createUser,
   updateUser,
+  getAllUsers,
 };

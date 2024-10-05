@@ -4,10 +4,11 @@ export interface IPost {
   title: string;
   content: string;
   images: string[];
+  favorite:Types.ObjectId[];
   category: string;
-  like: number;
-  dislike: number;
+  likes: Types.ObjectId[]; 
+  dislikes: Types.ObjectId[]; 
   author: Types.ObjectId;
   isPremium: boolean;
-  comments: string[];
+  comments: Types.ObjectId[];
 }

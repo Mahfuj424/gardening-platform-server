@@ -6,6 +6,8 @@ import { PostRoutes } from "../modules/post/post.route";
 import { FavoriteRoutes } from "../modules/favorite/favorite.route";
 import { NotificationRoutes } from "../modules/notification/notification.route";
 import { CommentRoutes } from "../modules/comment/comment.route";
+import {  LikeRoutes } from "../modules/like/like.route";
+import { DisLikeRoutes } from "../modules/disLike/disLike.route";
 
 const router = Router();
 
@@ -33,6 +35,14 @@ const moduleRoutes = [
   {
     path: "/comments",
     route: CommentRoutes,
+  },
+  {
+    path: "/likes",
+    route: LikeRoutes,
+  },
+  {
+    path: "/dislikes",
+    route: DisLikeRoutes,
   },
   {
     path: "/create-checkout-session",

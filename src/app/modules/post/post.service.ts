@@ -27,7 +27,21 @@ const getAllPostsFormDB = async (search: string, sortBy: string) => {
     sortCriteria = { comments: -1 };
   }
 
-  const result = await Post.find(query).sort(sortCriteria);
+  const result = await Post.find(query)
+    .populate("author")
+    .populate({
+      path: "comments", // Populate the 'comments' field
+      populate: { path: "author" }, // Optionally populate author inside comments
+    })
+    .populate({
+      path: "likes", // Populate the 'comments' field
+      populate: { path: "user" }, // Optionally populate author inside comments
+    })
+    .populate({
+      path: "dislikes", // Populate the 'comments' field
+      populate: { path: "user" }, // Optionally populate author inside comments
+    })
+    .sort(sortCriteria);
   return result;
 };
 
