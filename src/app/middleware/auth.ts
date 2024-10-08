@@ -5,7 +5,7 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 import config from "../config";
 
 // Interface for the JWT Payload, based on IUser
-interface IUserPayload extends JwtPayload {
+export interface IUserPayload extends JwtPayload {
   id: string;
   role: string;
   isVerified: boolean;

@@ -4,10 +4,15 @@ import catchAsync from "../../utils/catchAsync";
 import { CommentServices } from "./comment.service";
 
 const createComment = catchAsync(async (req, res) => {
-  const { author, commentText, commentImage} = req.body;
-  const {postId}= req.params;
-  console.log(postId);
-  const result = await CommentServices.createCommentIntoDB(postId, author, commentText, commentImage);
+  const { author, commentText, commentImage } = req.body;
+  const { postId } = req.params;
+
+  const result = await CommentServices.createCommentIntoDB(
+    postId,
+    author,
+    commentText,
+    commentImage
+  );
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -18,17 +23,13 @@ const createComment = catchAsync(async (req, res) => {
 });
 
 const updateComment = catchAsync(async (req, res) => {
-  const { id } = req.params; // Comment ID
-  const { author, commentText, commentImage } = req.body; // Author and comment data
-
-  // Ensure either 'commentText' or 'commentImage' is provided
-  if (!commentText && !commentImage) {
-    return "Either 'commentText' or 'commentImage' must be provided."
-  }
+  const {commentId, commentText, author, commentImage} = req.body; 
 
   try {
-    // Update the comment with the provided data
-    const result = await CommentServices.updateCommentInDB(id, author, { commentText, commentImage });
+    const result = await CommentServices.updateCommentInDB(commentId, author, {
+      commentText,
+      commentImage,
+    });
 
     sendResponse(res, {
       statusCode: httpStatus.OK,
@@ -41,13 +42,11 @@ const updateComment = catchAsync(async (req, res) => {
   }
 });
 
-
 const deleteComment = catchAsync(async (req, res) => {
-  const { id } = req.params; // Comment ID
-  const { author } = req.body; // Author ID from the request body
+  const { authorId, commentId } = req.body; 
 
   try {
-    const result = await CommentServices.deleteCommentInDB(id, author);
+    const result = await CommentServices.deleteCommentInDB(commentId, authorId);
 
     sendResponse(res, {
       statusCode: httpStatus.OK,
@@ -59,8 +58,6 @@ const deleteComment = catchAsync(async (req, res) => {
     console.log(error);
   }
 });
-
-
 
 const addReply = catchAsync(async (req, res) => {
   const { commentId, replyId } = req.body;
@@ -91,5 +88,5 @@ export const CommentControllers = {
   updateComment,
   addReply,
   getComments,
-  deleteComment
+  deleteComment,
 };

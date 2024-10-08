@@ -1,10 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import User from "../user/user.model";
 import { IPost } from "./post.interface";
 import Post from "./post.model";
 
 const createPostIntoDB = async (payload: IPost) => {
-  const result = await Post.create(payload);
-  return result;
+  const post = await Post.create(payload);
+
+  await User.findByIdAndUpdate(
+    payload?.author,
+    { $push: { posts: post?._id } },
+    { new: true, runValidators: true }
+  );
+
+  return post;
 };
 
 const getAllPostsFormDB = async (search: string, sortBy: string) => {

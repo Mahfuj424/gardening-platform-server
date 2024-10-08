@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import httpStatus from "http-status";
 import catchAsync from "../../utils/catchAsync";
@@ -50,7 +51,6 @@ const updateUser = catchAsync(async (req, res, next) => {
 });
 
 const getAllUsers = catchAsync(async (req, res, next) => {
-
   const result = await UserServices.getAllUsersFromDB();
 
   if (!result) {
@@ -70,8 +70,20 @@ const getAllUsers = catchAsync(async (req, res, next) => {
   });
 });
 
+const followOrUnfollow = catchAsync(async (req, res) => {
+  const { followerId, followeeId } = req.body;
+
+  try {
+    const result = await UserServices.followUser(followerId, followeeId);
+    res.status(200).json(result);
+  } catch (error:any) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
 export const UserControllers = {
   createUser,
   updateUser,
   getAllUsers,
+  followOrUnfollow
 };

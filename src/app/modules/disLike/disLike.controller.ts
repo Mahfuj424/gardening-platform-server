@@ -5,8 +5,7 @@ import Post from "../post/post.model";
 import LikeModel from "../like/like.model";
 
 export const toggleDislike = async (req: Request, res: Response) => {
-  const { postId } = req.params; // Assuming postId is passed in the URL
-  const {userId} = req.body; // Assuming user ID is available in the request object
+  const {userId, postId} = req.body; // Assuming user ID is available in the request object
 
   try {
     // Check if user has already disliked the post
@@ -54,7 +53,15 @@ export const toggleDislike = async (req: Request, res: Response) => {
     await Post.findByIdAndUpdate(postId, {
       $push: { dislikes: newDislike._id },
     });
-    return res.status(201).json({ message: "Dislike added" });
+
+    const updatedPost = await Post.findById(postId).populate({
+      path: 'dislikes',
+      populate: {
+        path: 'user',
+        select:"_id"
+      },
+    });
+    return res.status(201).json({ message: "Dislike added", post:updatedPost });
   } catch (error:any) {
     return res.status(500).json({ error: error.message });
   }

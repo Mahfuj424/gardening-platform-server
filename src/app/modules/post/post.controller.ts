@@ -7,7 +7,7 @@ import { PostServices } from "./post.service";
 // Create Post
 const createPost = catchAsync(async (req, res, next) => {
   const postData = req.body;
-
+  console.log("post", postData);
   const result = await PostServices.createPostIntoDB(postData);
 
   if (!result) {
@@ -56,7 +56,6 @@ const getAllPosts = catchAsync(async (req, res, next) => {
 const updatePost = catchAsync(async (req, res, next) => {
   const { id } = req.params;
   const updateData = req.body;
-
   const result = await PostServices.updatePostFormDB(id, updateData);
 
   if (!result) {

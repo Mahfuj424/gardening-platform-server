@@ -2,7 +2,7 @@ import { z } from "zod";
 
 const createDisLikeSchema = z.object({
   body: z.object({
-    author: z.string(),
+    userId: z.string(),
   }),
 });
 

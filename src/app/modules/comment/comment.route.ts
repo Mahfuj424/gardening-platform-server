@@ -7,10 +7,10 @@ const router = express.Router();
 router.post("/:postId", CommentControllers.createComment);
 
 // Update a specific comment
-router.patch("/:id", CommentControllers.updateComment);
+router.patch("/update", CommentControllers.updateComment);
 
 // delete comment
-router.delete("/:id/delete", CommentControllers.deleteComment);
+router.delete("/delete", CommentControllers.deleteComment);
 
 
 export const CommentRoutes = router;

@@ -7,6 +7,7 @@ const userSchema = new Schema<IUser>(
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     profileImage: { type: String },
+    favorites: [{ type: Schema.Types.ObjectId, ref: "Favorite" }],
     followers: [{ type: Schema.Types.ObjectId, ref: "User" }],
     following: [{ type: Schema.Types.ObjectId, ref: "User" }],
     isVerified: { type: Boolean, default: false },

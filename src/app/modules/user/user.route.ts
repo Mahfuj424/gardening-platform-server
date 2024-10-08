@@ -19,4 +19,6 @@ router.patch(
 
 router.get('/all-users', UserControllers.getAllUsers)
 
+router.post('/follow', UserControllers.followOrUnfollow);
+
 export const UserRoutes = router;

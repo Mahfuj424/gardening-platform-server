@@ -5,6 +5,7 @@ export interface IUser {
   email: string;
   password: string;
   profileImage?: string;
+  favorites:Types.ObjectId[];
   followers: Types.ObjectId[];
   following: Types.ObjectId[];
   isVerified: boolean;
