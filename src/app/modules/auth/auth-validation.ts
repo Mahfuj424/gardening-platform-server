@@ -8,4 +8,13 @@ const loginValidation = z.object({
 });
 
 
-export default loginValidation;
+const forgetPasswordValidation = z.object({
+  body:z.object({
+    email:string()
+  })
+})
+
+export const AuthValidations = {
+  loginValidation, 
+  forgetPasswordValidation,
+}
