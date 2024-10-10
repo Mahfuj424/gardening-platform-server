@@ -11,14 +11,12 @@ router.post(
   UserControllers.createUser
 );
 
-router.patch(
-  "/user/:id",
-  validateRequest(UserValidations.updateUserSchema),
-  UserControllers.updateUser
-);
+router.patch("/user/:id", UserControllers.updateUser);
 
-router.get('/all-users', UserControllers.getAllUsers)
+router.get("/all-users", UserControllers.getAllUsers);
 
-router.post('/follow', UserControllers.followOrUnfollow);
+router.post("/follow", UserControllers.followOrUnfollow);
+
+router.get("/:id", UserControllers.getSingleUser);
 
 export const UserRoutes = router;

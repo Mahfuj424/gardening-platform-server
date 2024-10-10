@@ -7,20 +7,58 @@ const createUserIntoDB = async (payload: IUser) => {
   return result;
 };
 
-const updateUserInfo = async (userId: string, updateData: Partial<IUser>) => {
-  const result = await User.findByIdAndUpdate(userId, updateData, {
-    new: true,
-    runValidators: true,
+const updateUserInfo = async (
+  id: string,
+  name: string,
+  email: string,
+  profileImage: string
+) => {
+  const user = await User.findById(id);
+  if (!user) {
+    throw new Error('User not found'); // Handle case when user is not found
+  }
+
+  // Update user fields
+  user.name = name;
+  user.email = email;
+  user.profileImage = profileImage;
+
+  // Save updated user information
+  const updatedUser = await user.save();
+
+  return updatedUser; // Return the updated user information
+};
+
+
+const getSingleUserFromDB = async (id: string) => {
+  const result = await User.findById(id).populate({
+    path: "posts",
+    populate: [
+      { path: "author" }, // Populating the author of the post
+      {
+        path: "likes", // Populating likes array
+        populate: { path: "user" }, // Further populating users inside likes
+      },
+      {
+        path: "dislikes", // Populating likes array
+        populate: { path: "user" }, // Further populating users inside likes
+      }, // Populating dislikes array (if it's a reference)
+      {
+        path: "comments", // Populating likes array
+        populate: { path: "author" }, // Further populating users inside likes
+      }, // Populating comments array (if it's a reference)
+    ],
   });
   return result;
 };
 
-
-const getAllUsersFromDB = async()=>{
-  const result = await User.find().populate('posts').populate('followers').populate('following')
+const getAllUsersFromDB = async () => {
+  const result = await User.find()
+    .populate("posts")
+    .populate("followers")
+    .populate("following");
   return result;
-}
-
+};
 
 const followUser = async (followerId: string, followeeId: any) => {
   // Check if the follower is already following the followee
@@ -28,23 +66,31 @@ const followUser = async (followerId: string, followeeId: any) => {
   const follower = await User.findById(followerId);
 
   if (!followee || !follower) {
-    throw new Error('User not found');
+    throw new Error("User not found");
   }
 
   const isAlreadyFollowing = follower.following.includes(followeeId);
 
   if (isAlreadyFollowing) {
     // Unfollow: Remove followee from follower's following list
-    await User.findByIdAndUpdate(followerId, { $pull: { following: followeeId } });
-    await User.findByIdAndUpdate(followeeId, { $pull: { followers: followerId } });
+    await User.findByIdAndUpdate(followerId, {
+      $pull: { following: followeeId },
+    });
+    await User.findByIdAndUpdate(followeeId, {
+      $pull: { followers: followerId },
+    });
 
-    return { message: 'User unfollowed successfully' };
+    return { message: "User unfollowed successfully" };
   } else {
     // Follow: Add followee to follower's following list
-    await User.findByIdAndUpdate(followerId, { $addToSet: { following: followeeId } });
-    await User.findByIdAndUpdate(followeeId, { $addToSet: { followers: followerId } });
+    await User.findByIdAndUpdate(followerId, {
+      $addToSet: { following: followeeId },
+    });
+    await User.findByIdAndUpdate(followeeId, {
+      $addToSet: { followers: followerId },
+    });
 
-    return { message: 'User followed successfully' };
+    return { message: "User followed successfully" };
   }
 };
 
@@ -52,5 +98,6 @@ export const UserServices = {
   createUserIntoDB,
   updateUserInfo,
   getAllUsersFromDB,
-  followUser
+  followUser,
+  getSingleUserFromDB,
 };

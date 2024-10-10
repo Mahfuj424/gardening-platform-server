@@ -29,11 +29,11 @@ const createPost = catchAsync(async (req, res, next) => {
 
 // Get All Posts with Search and Filter
 const getAllPosts = catchAsync(async (req, res, next) => {
-  const { search, sortBy } = req.query;
+  const { search, filter } = req.query;
 
   const result = await PostServices.getAllPostsFormDB(
     search as string,
-    sortBy as string
+    filter as string
   );
 
   if (!result.length) {
@@ -52,6 +52,7 @@ const getAllPosts = catchAsync(async (req, res, next) => {
     data: result,
   });
 });
+
 
 const updatePost = catchAsync(async (req, res, next) => {
   const { id } = req.params;

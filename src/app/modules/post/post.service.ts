@@ -18,6 +18,7 @@ const createPostIntoDB = async (payload: IPost) => {
 const getAllPostsFormDB = async (search: string, sortBy: string) => {
   const query: any = {};
 
+  // Prepare the search query if a search term is provided
   if (search) {
     query.$or = [
       { title: { $regex: search, $options: "i" } },
@@ -26,32 +27,42 @@ const getAllPostsFormDB = async (search: string, sortBy: string) => {
     ];
   }
 
+  // Sort criteria based on user input
   let sortCriteria: any = {};
+
+  // Determine sorting based on the sortBy parameter
   if (sortBy === "like") {
-    sortCriteria = { like: -1 };
+    sortCriteria = { likes: -1 }; // Sort by likes in descending order
   } else if (sortBy === "dislike") {
-    sortCriteria = { dislike: -1 };
+    sortCriteria = { dislikes: -1 }; // Sort by dislikes in descending order
   } else if (sortBy === "comments") {
-    sortCriteria = { comments: -1 };
+    sortCriteria = { comments: -1 }; // Sort by comments in descending order
+  } else {
+    sortCriteria = { createdAt: -1 }; // Default to sorting by createdAt in descending order
   }
 
+  // Fetch posts from the database with the specified query and sorting
   const result = await Post.find(query)
     .populate("author")
     .populate({
-      path: "comments", // Populate the 'comments' field
+      path: "comments",
       populate: { path: "author" }, // Optionally populate author inside comments
     })
     .populate({
-      path: "likes", // Populate the 'comments' field
-      populate: { path: "user" }, // Optionally populate author inside comments
+      path: "likes",
+      populate: { path: "user" }, // Optionally populate user inside likes
     })
     .populate({
-      path: "dislikes", // Populate the 'comments' field
-      populate: { path: "user" }, // Optionally populate author inside comments
+      path: "dislikes",
+      populate: { path: "user" }, // Optionally populate user inside dislikes
     })
-    .sort(sortCriteria);
+    .sort(sortCriteria) // Apply the sorting criteria
+    .exec(); // Execute the query
+
   return result;
 };
+
+
 
 const updatePostFormDB = async (postId: string, updateData: Partial<IPost>) => {
   const result = await Post.findByIdAndUpdate(postId, updateData, {

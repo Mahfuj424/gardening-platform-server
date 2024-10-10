@@ -27,11 +27,10 @@ const createUser = catchAsync(async (req, res, next) => {
   });
 });
 
-const updateUser = catchAsync(async (req, res, next) => {
+const getSingleUser = catchAsync(async (req, res, next) => {
   const { id } = req.params; // Extract user ID from the request parameters
-  const updateData = req.body; // Get the update data from the request body
 
-  const result = await UserServices.updateUserInfo(id, updateData);
+  const result = await UserServices.getSingleUserFromDB(id);
 
   if (!result) {
     return sendResponse(res, {
@@ -42,6 +41,22 @@ const updateUser = catchAsync(async (req, res, next) => {
     });
   }
 
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Successfully Reterived user",
+    data: result,
+  });
+});
+
+const updateUser = catchAsync(async (req, res, next) => {
+  const { id } = req.params; // Extract user ID from the request parameters
+  const { name, email, profileImage } = req.body; // Get the update data from the request body
+
+  // Call the service to update user information
+  const result = await UserServices.updateUserInfo(id, name, email, profileImage);
+
+  // Send the response
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -76,7 +91,7 @@ const followOrUnfollow = catchAsync(async (req, res) => {
   try {
     const result = await UserServices.followUser(followerId, followeeId);
     res.status(200).json(result);
-  } catch (error:any) {
+  } catch (error: any) {
     res.status(400).json({ message: error.message });
   }
 });
@@ -85,5 +100,6 @@ export const UserControllers = {
   createUser,
   updateUser,
   getAllUsers,
-  followOrUnfollow
+  followOrUnfollow,
+  getSingleUser,
 };
