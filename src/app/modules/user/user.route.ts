@@ -13,6 +13,8 @@ router.post(
 
 router.patch("/user/:id", UserControllers.updateUser);
 
+router.patch("/update-role/:id", UserControllers.updateUserRole);
+
 router.get("/all-users", UserControllers.getAllUsers);
 
 router.post("/follow", UserControllers.followOrUnfollow);

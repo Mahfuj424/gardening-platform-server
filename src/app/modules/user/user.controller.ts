@@ -54,7 +54,12 @@ const updateUser = catchAsync(async (req, res, next) => {
   const { name, email, profileImage } = req.body; // Get the update data from the request body
 
   // Call the service to update user information
-  const result = await UserServices.updateUserInfo(id, name, email, profileImage);
+  const result = await UserServices.updateUserInfo(
+    id,
+    name,
+    email,
+    profileImage
+  );
 
   // Send the response
   sendResponse(res, {
@@ -65,10 +70,41 @@ const updateUser = catchAsync(async (req, res, next) => {
   });
 });
 
-const getAllUsers = catchAsync(async (req, res, next) => {
-  const result = await UserServices.getAllUsersFromDB();
+const updateUserRole = catchAsync(async (req, res, next) => {
+  const {id} = req.params;
+  const {role} = req.body;
+  
+  const result = await UserServices.updateUserRole(id, role);
 
   if (!result) {
+    return sendResponse(res, {
+      statusCode: httpStatus.NOT_FOUND,
+      success: false,
+      message: "Users not found",
+      data: [],
+    });
+  }
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Successfully update user role",
+    data: result,
+  });
+});
+
+const getAllUsers = catchAsync(async (req, res, next) => {
+  const { premiumAccess } = req.query; // Read from query instead of body
+
+  const result = await UserServices.getAllUsersFromDB(
+    premiumAccess === "true"
+      ? true
+      : premiumAccess === "false"
+      ? false
+      : undefined
+  );
+
+  if (!result || result.length === 0) {
     return sendResponse(res, {
       statusCode: httpStatus.NOT_FOUND,
       success: false,
@@ -102,4 +138,5 @@ export const UserControllers = {
   getAllUsers,
   followOrUnfollow,
   getSingleUser,
+  updateUserRole,
 };

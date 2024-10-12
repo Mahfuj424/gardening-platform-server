@@ -1,8 +1,13 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response } from "express";
 import DislikeModel from "../disLike/disLike.model";
 import Post from "../post/post.model";
 import LikeModel from "../like/like.model";
+import httpStatus from "http-status";
+import sendResponse from "../../utils/sendResponse";
+import catchAsync from "../../utils/catchAsync";
+import {  getAllDislikesFromDB } from "./disLike.service";
 
 export const toggleDislike = async (req: Request, res: Response) => {
   const {userId, postId} = req.body; // Assuming user ID is available in the request object
@@ -66,3 +71,25 @@ export const toggleDislike = async (req: Request, res: Response) => {
     return res.status(500).json({ error: error.message });
   }
 };
+
+
+export const getAllDislikes =catchAsync(async (req, res, next) => {
+
+  const result = await getAllDislikesFromDB();
+
+  if (!result) {
+    sendResponse(res, {
+      statusCode: httpStatus.NOT_FOUND,
+      success: true,
+      message: "not found dislikes",
+      data: result,
+    });
+  }
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Successfully Retrieved all dislikes",
+    data: result,
+  });
+});

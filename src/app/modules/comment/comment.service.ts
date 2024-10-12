@@ -89,10 +89,16 @@ const getCommentsByPostId = async (postId: string) => {
   return comments;
 };
 
+const getAllCommentsFromDB = async () => {
+  const comments = await Comment.find()
+  return comments;
+};
+
 export const CommentServices = {
   createCommentIntoDB,
   updateCommentInDB,
   addReplyToComment,
   getCommentsByPostId,
-  deleteCommentInDB
+  deleteCommentInDB,
+  getAllCommentsFromDB
 };

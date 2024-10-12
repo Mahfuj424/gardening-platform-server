@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { toggleDislike } from "./disLike.controller";
+import { getAllDislikes, toggleDislike } from "./disLike.controller";
 import validateRequest from "../../middleware/validateRequest";
 import { DisLikeValidations } from "./disLike.validation";
 
@@ -10,5 +10,6 @@ router.post(
   validateRequest(DisLikeValidations.createDisLikeSchema),
   toggleDislike
 );
+router.get("/", getAllDislikes);
 
 export const DisLikeRoutes = router;

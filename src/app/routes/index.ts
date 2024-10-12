@@ -1,5 +1,4 @@
 import { Router } from "express";
-import { paymentRoutes } from "../modules/payment/payment.route";
 import { UserRoutes } from "../modules/user/user.route";
 import { AuthRotues } from "../modules/auth/auth-route";
 import { PostRoutes } from "../modules/post/post.route";
@@ -8,6 +7,7 @@ import { NotificationRoutes } from "../modules/notification/notification.route";
 import { CommentRoutes } from "../modules/comment/comment.route";
 import {  LikeRoutes } from "../modules/like/like.route";
 import { DisLikeRoutes } from "../modules/disLike/disLike.route";
+import { PaymentRouters } from './../modules/paymentAamarpay/payment.route';
 
 const router = Router();
 
@@ -45,8 +45,8 @@ const moduleRoutes = [
     route: DisLikeRoutes,
   },
   {
-    path: "/create-checkout-session",
-    route: paymentRoutes,
+    path: "/payment",
+    route: PaymentRouters,
   },
 ];
 

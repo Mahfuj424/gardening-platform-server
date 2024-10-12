@@ -8,6 +8,7 @@ import DislikeModel from "../disLike/disLike.model";
 import sendResponse from "../../utils/sendResponse";
 import httpStatus from "http-status";
 import catchAsync from "../../utils/catchAsync";
+import { getAllLikesFromDB } from "./like.service";
 
 export const toggleLike = async (req: Request, res: Response) => {
   const { userId, postId } = req.body; // Assuming user ID is available in the request object
@@ -78,4 +79,25 @@ export const toggleLike = async (req: Request, res: Response) => {
     return res.status(500).json({ error: error.message });
   }
 };
+
+export const getAllLikes =catchAsync(async (req, res, next) => {
+
+  const result = await getAllLikesFromDB();
+
+  if (!result) {
+    sendResponse(res, {
+      statusCode: httpStatus.NOT_FOUND,
+      success: true,
+      message: "not found likes",
+      data: result,
+    });
+  }
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Successfully Retrieved all likes",
+    data: result,
+  });
+});
 

@@ -62,8 +62,6 @@ const getAllPostsFormDB = async (search: string, sortBy: string) => {
   return result;
 };
 
-
-
 const updatePostFormDB = async (postId: string, updateData: Partial<IPost>) => {
   const result = await Post.findByIdAndUpdate(postId, updateData, {
     new: true,
@@ -73,7 +71,20 @@ const updatePostFormDB = async (postId: string, updateData: Partial<IPost>) => {
 };
 
 const getSinglePostFormDB = async (postId: string) => {
-  const result = await Post.findById(postId);
+  const result = await Post.findById(postId)
+    .populate("author")
+    .populate({
+      path: "comments",
+      populate: { path: "author" }, // Optionally populate author inside comments
+    })
+    .populate({
+      path: "likes",
+      populate: { path: "user" }, // Optionally populate user inside likes
+    })
+    .populate({
+      path: "dislikes",
+      populate: { path: "user" }, // Optionally populate user inside dislikes
+    }); 
   return result;
 };
 

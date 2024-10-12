@@ -15,7 +15,7 @@ const updateUserInfo = async (
 ) => {
   const user = await User.findById(id);
   if (!user) {
-    throw new Error('User not found'); // Handle case when user is not found
+    throw new Error("User not found"); // Handle case when user is not found
   }
 
   // Update user fields
@@ -29,9 +29,17 @@ const updateUserInfo = async (
   return updatedUser; // Return the updated user information
 };
 
+const updateUserRole = async (id: any, role: string) => {
+  const updateUser = await User.findByIdAndUpdate(
+    id,
+    { role },
+    { new: true, runValidators: true }
+  );
+  return updateUser
+};
 
 const getSingleUserFromDB = async (id: string) => {
-  const result = await User.findById(id).populate({
+  const result = await User.findById(id).populate('followers').populate('following').populate({
     path: "posts",
     populate: [
       { path: "author" }, // Populating the author of the post
@@ -52,11 +60,21 @@ const getSingleUserFromDB = async (id: string) => {
   return result;
 };
 
-const getAllUsersFromDB = async () => {
-  const result = await User.find()
+const getAllUsersFromDB = async (isPremium?: boolean) => {
+  let filter = {};
+
+  // Apply filter based on isPremium value
+  if (isPremium === true) {
+    filter = { premiumAccess: true }; // Fetch only premium users
+  } else if (isPremium === false) {
+    filter = { premiumAccess: false }; // Fetch only non-premium users
+  }
+
+  const result = await User.find(filter)
     .populate("posts")
     .populate("followers")
     .populate("following");
+
   return result;
 };
 
@@ -100,4 +118,5 @@ export const UserServices = {
   getAllUsersFromDB,
   followUser,
   getSingleUserFromDB,
+  updateUserRole
 };

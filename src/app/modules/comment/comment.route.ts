@@ -9,6 +9,8 @@ router.post("/:postId", CommentControllers.createComment);
 // Update a specific comment
 router.patch("/update", CommentControllers.updateComment);
 
+router.get("/", CommentControllers.getAllComments);
+
 // delete comment
 router.delete("/delete", CommentControllers.deleteComment);
 

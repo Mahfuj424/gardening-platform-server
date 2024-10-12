@@ -39,15 +39,15 @@ const auth = (...requiredRoles: string[]) => {
 
       // Role check
       if (requiredRoles.length && !requiredRoles.includes(user.role)) {
-        return res.status(401).json({
+        return res.status(403).json({
           success: false,
-          statusCode: 401,
+          statusCode: 403,
           message: "You do not have permission to access this route",
         });
       }
 
       // Attach user data to the request object
-      req.user = user;
+      req.user = user;  // TypeScript will now recognize req.user as IUserPayload
       next();
     });
   });

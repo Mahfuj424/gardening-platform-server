@@ -83,10 +83,24 @@ const getComments = catchAsync(async (req, res) => {
   });
 });
 
+
+const getAllComments = catchAsync(async (req, res) => {
+  const result = await CommentServices.getAllCommentsFromDB();
+
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Successfully fetched comments",
+    data: result,
+  });
+});
+
 export const CommentControllers = {
   createComment,
   updateComment,
   addReply,
   getComments,
   deleteComment,
+  getAllComments
 };
