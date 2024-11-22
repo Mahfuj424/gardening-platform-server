@@ -37,10 +37,12 @@ const logInUserIntoDB = async (email: string, password: string) => {
 
 // Nodemailer configuration
 const transporter = nodemailer.createTransport({
-  service: "gmail", // You can use other services like 'hotmail', 'yahoo', etc.
+  service: "gmail",
+  port: 587,
+  secure: true,
   auth: {
-    user: "mahfujahmad424@gmail.com", // Replace with your email
-    pass: "iagd gzpn gjqi sukf", // Replace with your email password or app password
+    user: "mahfujahmad424@gmail.com",
+    pass: "iagd gzpn gjqi sukf",
   },
 });
 
@@ -61,7 +63,7 @@ const forgotPasswordIntoDB = async (email: string) => {
     });
 
     // Generate the password reset link
-    const link = `http://localhost:5000/api/v1/auth/reset-password/${user?._id}/${token}`;
+    const link = `https://gardening-tips-platform-server.vercel.app/api/v1/auth/reset-password/${user?._id}/${token}`;
 
     // Set up mail options
     const mailOptions = {
@@ -169,7 +171,7 @@ const resetPasswordIntoDB = async (id: string, token: string) => {
 
                 const data = await response.json();
                   alert("Password updated successfully!");
-                  window.location.href = "http://localhost:3000/auth/login"; // Redirect to the correct login page after success
+                  window.location.href = "https://gardening-tips-platform-client.vercel.app/auth/login"; // Redirect to the correct login page after success
                 
               } catch (error) {
                 console.error("Error during password update:", error);
@@ -180,7 +182,6 @@ const resetPasswordIntoDB = async (id: string, token: string) => {
         </div>
       </div>
     `;
-
     }
   } catch (error) {
     return `

@@ -6,7 +6,7 @@ import notFound from "./app/middleware/notFoundRoute";
 const app = express();
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({origin:['https://gardening-tips-platform-client.vercel.app', 'http://localhost:3000']}));
 
 app.use("/api/v1", router);
 

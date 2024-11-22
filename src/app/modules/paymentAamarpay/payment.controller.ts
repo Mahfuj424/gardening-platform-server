@@ -25,12 +25,12 @@ const createPayment = catchAsync(async (req, res) => {
 });
 
 const successUrl = catchAsync(async (req, res) => {
-    const { transactionId, status } = req.query;
-    const result = await PaymentServices.updateAndConfirmation(
-      transactionId as string
-    );
-  
-    const successOrFailedPage = `
+  const { transactionId, status } = req.query;
+  const result = await PaymentServices.updateAndConfirmation(
+    transactionId as string
+  );
+
+  const successOrFailedPage = `
       <!DOCTYPE html>
       <html lang="en">
       <head>
@@ -51,7 +51,7 @@ const successUrl = catchAsync(async (req, res) => {
             text-align: center;
           }
           h1 {
-            color: ${status === 'success' ? '#28a745' : '#dc3545'};
+            color: ${status === "success" ? "#28a745" : "#dc3545"};
             font-size: 3rem;
             margin-bottom: 1rem;
           }
@@ -63,21 +63,24 @@ const successUrl = catchAsync(async (req, res) => {
       </head>
       <body>
         <div class="container">
-          <h1>Payment ${status === 'success' ? 'Successful' : 'Failed'}</h1>
-          <p>${status === 'success' ? 'Thank you for your payment. You will be redirected to the homepage shortly.' : 'Something went wrong!!  Please try again'}</p>
+          <h1>Payment ${status === "success" ? "Successful" : "Failed"}</h1>
+          <p>${
+            status === "success"
+              ? "Thank you for your payment. You will be redirected to the homepage shortly."
+              : "Something went wrong!!  Please try again"
+          }</p>
         </div>
         <script>
           // Redirect to homepage after 2.5 seconds
           setTimeout(() => {
-            window.location.href = "http://localhost:3000";
+            window.location.href = "http://localhost:3000"
           }, 2500);
         </script>
       </body>
       </html>
     `;
-    res.send(successOrFailedPage);
-  });
-  
+  res.send(successOrFailedPage);
+});
 
 export const PaymentControllers = {
   createPayment,

@@ -1,9 +1,42 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { IUser } from "./user.interface";
+
 import User from "./user.model";
 
-const createUserIntoDB = async (payload: IUser) => {
-  const result = await User.create(payload);
+interface UserPayload {
+  name: string;
+  email: string;
+  gander: string;
+  password: string;
+  profileImage?: string; // profileImage is optional
+}
+
+const createUserIntoDB = async ({
+  name,
+  email,
+  gander,
+  password,
+  profileImage,
+}: UserPayload) => {
+  // Default avatars based on gender
+  const boyAvatarUrl = `https://avatar.iran.liara.run/public/boy?username=${name}`;
+  const girlAvatarUrl = `https://avatar.iran.liara.run/public/girl?username=${name}`;
+
+  // Create a new user object
+  const user = {
+    name,
+    email,
+    password, // Assuming password is already hashed elsewhere
+    profileImage: profileImage || "", // Use profileImage if provided
+    gander,
+  };
+
+  // Assign the correct default avatar based on gender if no profile image is provided
+  if (!user.profileImage) {
+    user.profileImage = gander === "male" ? boyAvatarUrl : girlAvatarUrl;
+  }
+
+  // Save the user in the database
+  const result = await User.create(user);
   return result;
 };
 
@@ -11,7 +44,7 @@ const updateUserInfo = async (
   id: string,
   name: string,
   email: string,
-  profileImage: string
+  profileImage?: string
 ) => {
   const user = await User.findById(id);
   if (!user) {
@@ -35,28 +68,31 @@ const updateUserRole = async (id: any, role: string) => {
     { role },
     { new: true, runValidators: true }
   );
-  return updateUser
+  return updateUser;
 };
 
 const getSingleUserFromDB = async (id: string) => {
-  const result = await User.findById(id).populate('followers').populate('following').populate({
-    path: "posts",
-    populate: [
-      { path: "author" }, // Populating the author of the post
-      {
-        path: "likes", // Populating likes array
-        populate: { path: "user" }, // Further populating users inside likes
-      },
-      {
-        path: "dislikes", // Populating likes array
-        populate: { path: "user" }, // Further populating users inside likes
-      }, // Populating dislikes array (if it's a reference)
-      {
-        path: "comments", // Populating likes array
-        populate: { path: "author" }, // Further populating users inside likes
-      }, // Populating comments array (if it's a reference)
-    ],
-  });
+  const result = await User.findById(id)
+    .populate("followers")
+    .populate("following")
+    .populate({
+      path: "posts",
+      populate: [
+        { path: "author" }, // Populating the author of the post
+        {
+          path: "likes", // Populating likes array
+          populate: { path: "user" }, // Further populating users inside likes
+        },
+        {
+          path: "dislikes", // Populating likes array
+          populate: { path: "user" }, // Further populating users inside likes
+        }, // Populating dislikes array (if it's a reference)
+        {
+          path: "comments", // Populating likes array
+          populate: { path: "author" }, // Further populating users inside likes
+        }, // Populating comments array (if it's a reference)
+      ],
+    });
   return result;
 };
 
@@ -118,5 +154,5 @@ export const UserServices = {
   getAllUsersFromDB,
   followUser,
   getSingleUserFromDB,
-  updateUserRole
+  updateUserRole,
 };
