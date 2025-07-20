@@ -73,7 +73,7 @@ const successUrl = catchAsync(async (req, res) => {
         <script>
           // Redirect to homepage after 2.5 seconds
           setTimeout(() => {
-            window.location.href = "http://localhost:3000"
+            window.location.href = "https://gardening-tips-platform-client.vercel.app"
           }, 2500);
         </script>
       </body>

@@ -9,7 +9,7 @@ export const initiatePayment = async (paymentData: any) => {
     tran_id: paymentData.transactionId,
     success_url: `https://gardening-tips-platform-server.vercel.app/api/v1/payment/confirmation?transactionId=${paymentData?.transactionId}&status=success`,
     fail_url: `https://gardening-tips-platform-server.vercel.app/api/v1/payment/confirmation?status=failed`,
-    cancel_url: "http://localhost:3000",
+    cancel_url: "https://gardening-tips-platform-client.vercel.app",
     amount: paymentData.totalAmount,
     currency: "BDT",
     desc: "Merchant Registration Payment",
